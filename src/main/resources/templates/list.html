@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+<form>
+    <label>Search By Author</label>
+    <input type="text" name="author" placeholder="author">
+    <input type="submit">
+<!--    <input type="text" placeholder="ecommerce">-->
+</form>
+<form>
+    <label>Filter by Ecommerce</label>
+<!--    th:value khi tìm kiếm thì vẫn để tên ở trên thanh-->
+    <select onchange="this.form.submit()" th:name="ecomId" th:value="${ecomId}">
+        <option value="" disabled selected>Choose something</option>
+<!--        th:block cũng giống như thẻ div-->
+        <th:block th:each="ecom : ${ecommers}">
+            <option th:value="${ecom.id}" th:text="${ecom.name}"></option>
+        </th:block>
+    </select>
+</form>
+
+
+<form>
+    <label></label>
+</form>
+
+<a th:href="@{/create}">Create new Blog</a>
+<!--String id, String title, String content-->
+<table border="1" cellpadding="2" class="table table-hower">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Topic</th>
+        <th scope="col">Author</th>
+        <th scope="col">ECommerce</th>
+        <th scope="col">Update</th>
+        <th scope="col">Delete</th>
+        <th scope="col">Detail</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--  int id, String topic, String author, ECommerce eCommerce-->
+    <tr th:each="b : ${blogs}" th:object="${b}">
+        <td scope="col" th:text="*{id}"></td>
+        <td scope="col" th:text="*{topic}"></td>
+        <td scope="col" th:text="*{author}"></td>
+        <td scope="col" th:text="*{eCommerce.name}"></td>
+        <td scope="col">
+            <a th:href="@{/update/(id=*{id})} ">Update</a>
+        </td>
+        <td scope="col">
+            <a th:href="@{/delete/(id=*{id})}">Delete</a>
+        </td>
+        <td scope="col">
+            <a th:href="@{/detail/(id=*{id})}">Detail</a>
+        </td>
+    </tr>
+    </tbody>
+<!--        Quay trở về trang 1 :-->
+<!--    hasPrevious trả về boolen nếu có trang trước thì trả về true th:if,còn ko có trang trước trả về false -->
+
+</table>
+
+<div>
+    <a th:href="@{'/'(page = ${blogs.number - 1},author=${author})}" th:if="${blogs.hasPrevious()}">Previous</a>
+
+    <!--   Trang hiện tại :-->
+    <span th:text="${blogs.number + 1}"></span> <span th:text="${blogs.totalPages}"></span>
+
+    <!--    Next tiếp theo-->
+    <a th:href="@{'/'(page = ${blogs.number + 1},author=${author})}" th:if="${blogs.hasNext()}">Next</a>
+</div>
+</body>
+</html>
