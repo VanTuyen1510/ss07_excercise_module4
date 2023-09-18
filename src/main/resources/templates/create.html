@@ -23,7 +23,7 @@
         </tr>
         <tr>
             <td>Author</td>
-            <td><input type="text" th:field="*{author}"></td>
+            <td id=""><input type="text" th:field="*{author}"></td>
         </tr>
         <tr>
             <td>ECommerce</td>
@@ -32,6 +32,7 @@
                     <option th:each="e:${ecommerces}" th:value="${e.id}" th:text="${e.name}"/>
                 </select>
             </td>
+<!--            th:name là phân biệt input-->
         </tr>
     </table>
     <input type="submit" value="CREATE BLOG">

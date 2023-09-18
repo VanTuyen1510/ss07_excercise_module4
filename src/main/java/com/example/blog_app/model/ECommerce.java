@@ -1,5 +1,7 @@
 package com.example.blog_app.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class ECommerce {
     private String name;
 
     @OneToMany(mappedBy = "eCommerce") //mappedBy kiểu như liên kết khóa ngoại,bên 1 là oneToMany còn bên nhiều là ManyToOne
+    @JsonBackReference
     List<Blog> blogs;
 
     public ECommerce() {
