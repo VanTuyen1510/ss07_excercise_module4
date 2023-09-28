@@ -11,18 +11,18 @@
 </head>
 
 <body>
-<form>
-    <label>Search By Author</label>
-    <input type="text" name="author" placeholder="author">
-    <input type="submit">
-<!--    <input type="text" placeholder="ecommerce">-->
-</form>
+<!--<form>-->
+<!--    <label>Search By Author</label>-->
+<!--    <input type="text" name="author" placeholder="author">-->
+<!--    <input type="submit">-->
+<!--&lt;!&ndash;    <input type="text" placeholder="ecommerce">&ndash;&gt;-->
+<!--</form>-->
 <form>
     <label>Filter by Ecommerce</label>
-<!--    th:value khi tìm kiếm thì vẫn để tên ở trên thanh-->
+    <!--    th:value khi tìm kiếm thì vẫn để tên ở trên thanh-->
     <select onchange="this.form.submit()" th:name="ecomId" th:value="${ecomId}">
         <option value="" disabled selected>Choose something</option>
-<!--        th:block cũng giống như thẻ div-->
+        <!--        th:block cũng giống như thẻ div-->
         <th:block th:each="ecom : ${ecommers}">
             <option th:value="${ecom.id}" th:text="${ecom.name}"></option>
         </th:block>
@@ -36,6 +36,9 @@
 
 <a th:href="@{/create}">Create new Blog</a>
 <!--String id, String title, String content-->
+Author : <input type="text" id="author" oninput="searchByAuthor()">
+</br>
+<button onclick="searchByAuthor();">Search</button>
 <table border="1" cellpadding="2" class="table table-hower">
     <thead class="thead-dark">
     <tr>
@@ -48,37 +51,75 @@
         <th scope="col">Detail</th>
     </tr>
     </thead>
-    <tbody>
-    <!--  int id, String topic, String author, ECommerce eCommerce-->
-    <tr th:each="b : ${blogs}" th:object="${b}">
-        <td scope="col" th:text="*{id}"></td>
-        <td scope="col" th:text="*{topic}"></td>
-        <td scope="col" th:text="*{author}"></td>
-        <td scope="col" th:text="*{eCommerce.name}"></td>
-        <td scope="col">
-            <a th:href="@{/update/(id=*{id})} ">Update</a>
-        </td>
-        <td scope="col">
-            <a th:href="@{/delete/(id=*{id})}">Delete</a>
-        </td>
-        <td scope="col">
-            <a th:href="@{/detail/(id=*{id})}">Detail</a>
-        </td>
-    </tr>
+    <tbody id="result">
+    <!-- int id, String topic, String author, ECommerce eCommerce-->
     </tbody>
-<!--        Quay trở về trang 1 :-->
-<!--    hasPrevious trả về boolen nếu có trang trước thì trả về true th:if,còn ko có trang trước trả về false -->
+    <!--        Quay trở về trang 1 :-->
+    <!--    hasPrevious trả về boolen nếu có trang trước thì trả về true th:if,còn ko có trang trước trả về false -->
+
 
 </table>
 
-<div>
-    <a th:href="@{'/'(page = ${blogs.number - 1},author=${author})}" th:if="${blogs.hasPrevious()}">Previous</a>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<button id="btn-more" onclick="loadMore();">Load More</button>
+<script>
+    function searchByAuthor() {
+        let blogAuthor = $("#author").val();
+        $.ajax({
+            url: "http://localhost:8080/api/blog/search",
+            data: {
+                author: blogAuthor
+            },
+            type: "get",
+            dataType: "json",
 
-    <!--   Trang hiện tại :-->
-    <span th:text="${blogs.number + 1}"></span> <span th:text="${blogs.totalPages}"></span>
 
-    <!--    Next tiếp theo-->
-    <a th:href="@{'/'(page = ${blogs.number + 1},author=${author})}" th:if="${blogs.hasNext()}">Next</a>
-</div>
+            success: function (res) {
+                let result = "";
+                for (let i = 0; i < res.length; i++) {
+                    result += "<tr>" +
+                        "<td>" + res[i].id + "</td>"
+                        + "<td>" + res[i].topic + "</td>"
+                        + "<td>" + res[i].author + "</td>"
+                        + "<td>" + res[i].eCommerce.name + "</td>"
+                        + "</tr>";
+                }
+                $("#result").html(result);
+            }
+        })
+    }
+
+    let page = 0;
+    var size = 5;
+    loadMore();
+    function loadMore() {
+        console.log(page);
+        $.ajax({
+            url: `http://localhost:8080/api/blog/load-page?page=${page++}`,
+            type: "get",
+            dataType: "json",
+            success: function (res) {
+                console.log("success");
+                console.log(res);
+                let content = res.content;
+                let newRow = "";
+                for (let i = 0; i < content.length; i++) {
+                    newRow += "<tr>" +
+                        "<td>" + content[i].id + "</td>"
+                        + "<td>" + content[i].topic + "</td>"
+                        + "<td>" + content[i].author + "</td>"
+                        + "<td>" + content[i].eCommerce.name + "</td>"
+                        + "</tr>";
+
+                }
+                $("#result").append(newRow);
+                if (page>=res.totalPages){
+                    $("#btn-more").hide();
+                }
+            }
+        })
+    }
+</script>
+
 </body>
 </html>

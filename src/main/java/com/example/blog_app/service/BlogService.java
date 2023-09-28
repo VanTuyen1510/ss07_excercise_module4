@@ -23,4 +23,7 @@ public interface BlogService {
     Page<Blog> findAllBlogByName(String name,Pageable pageable);
 
     Page<Blog> findAllBlogByECommerceId(int id, Pageable pageable);
+
+    List<Blog> findByAuthor(String author);
+
 }

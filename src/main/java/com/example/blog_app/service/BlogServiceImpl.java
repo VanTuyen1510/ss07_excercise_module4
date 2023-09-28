@@ -54,4 +54,9 @@ public class BlogServiceImpl implements BlogService{
     public Page<Blog> findAllBlogByECommerceId(int id, Pageable pageable) {
         return blogRepository.findAllBlogByECommerceId(id,pageable);
     }
+
+    @Override
+    public List<Blog> findByAuthor(String author) {
+        return blogRepository.findAllByAuthorContaining(author);
+    }
 }

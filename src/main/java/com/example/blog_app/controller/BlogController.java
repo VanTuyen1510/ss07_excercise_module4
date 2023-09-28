@@ -25,31 +25,7 @@ public class BlogController {
     ECommerceService eCommerceService;
 
     @GetMapping("")
-    public String displayBlog(Optional<String> author,
-                              Optional<Integer> ecomId,
-                              Model model,
-                              @PageableDefault(size = 5) Pageable pageable) {
-
-        // Nếu input author không nhập gì thì chạy if
-        if (!author.isPresent()) {
-//            Author ko nhập nhưng Ecom nhập giá trị
-            if (ecomId.isPresent()) {
-                model.addAttribute("blogs", blogService.findAllBlogByECommerceId(ecomId.get(), pageable));
-                model.addAttribute("ecomId", ecomId.get());
-                // ecomId.get() gửi qua lại để input còn giữ giá trị
-            } else {
-                model.addAttribute("blogs", blogService.findAllBlog(pageable));
-            }
-        } else {
-            model.addAttribute("blogs", blogService.findAllBlogByName(author.get(), pageable));
-            model.addAttribute("author", author.get());
-        }
-
-        model.addAttribute("ecommers", eCommerceService.findAll());
-        // model.addAttribute("blogs",blogService.findAllBlog(pageable));
-//        Page<Blog> blogs = blogService.findAllBlog(pageable);
-//        Page<Blog> blogs = blogService.findAllBlogByECommerceId(1, pageable);
-//        model.addAttribute("blogs", blogService.findAll());
+    public String displayBlog(){
         return "list";
     }
 

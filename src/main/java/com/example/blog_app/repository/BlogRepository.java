@@ -8,10 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BlogRepository extends JpaRepository<Blog, Integer> {
 
     Page<Blog> findBlogByAuthorContaining(String author, Pageable pageable);
+    List<Blog> findAllByAuthorContaining(String author);
 
 
     // tự định nghĩa bằng câu truy vấn:
